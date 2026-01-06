@@ -6,6 +6,7 @@
   [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
   [![Python](https://img.shields.io/badge/Python-3.6+-blue.svg)](https://www.python.org/)
   [![Status](https://img.shields.io/badge/Status-Active-success.svg)](https://github.com/DuanZGit/GWaken)
+  [![Android](https://img.shields.io/badge/Android-Supported-green.svg)](https://github.com/DuanZGit/GWaken)
 </div>
 
 ---
@@ -13,6 +14,8 @@
 ## 🌙 项目概述
 
 GWaken 是一个智能睡眠监测与唤醒系统，专门适配红米手环2设备。通过分析心率和体动数据，系统能够准确检测睡眠阶段，并在浅睡眠阶段智能唤醒用户，提供更舒适的起床体验。
+
+**最新更新：系统现已支持Android平台！** 我们已将GWaken系统成功移植到Android平台，创建了完整的移动应用版本，使用户可以在手机上直接使用智能睡眠监测功能。
 
 ## 🌟 核心功能
 
@@ -22,6 +25,8 @@ GWaken 是一个智能睡眠监测与唤醒系统，专门适配红米手环2设
 - **红米手环2适配**：支持通过蓝牙连接红米手环2，获取实时传感器数据
 - **Web API接口**：提供RESTful API接口，支持远程监控和控制
 - **多传感器支持**：支持蓝牙、硬件和模拟传感器
+- **Android应用**：完整的移动应用版本，支持在Android设备上直接使用
+- **跨平台兼容**：支持桌面和移动平台，统一的算法和用户体验
 
 ## 🏗️ 系统架构
 
@@ -33,6 +38,15 @@ GWaken/
 ├── setup.py               # 安装配置
 ├── config.json            # 配置文件
 ├── Dockerfile             # 容器化配置
+├── GWaken-Android/        # Android应用目录
+│   ├── main.py            # Kivy主应用入口
+│   ├── android_bluetooth_sensor.py # Android蓝牙传感器模块
+│   ├── buildozer.spec     # Buildozer构建配置
+│   ├── requirements.txt   # Android依赖
+│   ├── build_apk.sh       # APK构建脚本
+│   ├── assets/            # 资源文件
+│   │   └── icons/         # 应用图标
+│   └── README.md          # Android应用说明
 ├── sleep_monitor/         # 主要代码目录
 │   ├── main.py            # 主程序入口
 │   ├── run_api.py         # API运行脚本
@@ -87,6 +101,17 @@ python -m sleep_monitor.run_api 5000
 ```
 
 API服务启动后，访问 `http://localhost:5000` 查看Web界面。
+
+#### 方式3：构建Android应用
+```bash
+cd GWaken-Android
+# 安装构建工具
+pip install buildozer
+# 构建APK
+buildozer android debug
+```
+
+构建完成后，APK文件将位于 `GWaken-Android/bin/` 目录中。
 
 ## 📡 API接口
 
@@ -167,6 +192,13 @@ python -m sleep_monitor.run_api 5000
 ```bash
 docker build -t g-waken .
 docker run -p 5000:5000 g-waken
+```
+
+### Android部署
+```bash
+cd GWaken-Android
+buildozer android debug
+# 生成的APK位于 bin/ 目录
 ```
 
 ### 生产环境部署
