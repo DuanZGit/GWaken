@@ -7,7 +7,10 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,txt,json
 
 version = 1.0.0
-requirements = python3, kivy==2.1.0, flask, requests
+requirements = python3, kivy==2.1.0, flask, requests, pybluez
+
+# 包含sleep_monitor模块
+source.exclude_dirs = .git, .svn, .hg
 
 [buildozer]
 log_level = 2

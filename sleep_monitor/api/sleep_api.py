@@ -8,9 +8,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 import os
-from sleep_monitor.sensors import HardwareSensor, BluetoothSensor
-from sleep_monitor.sleep_analysis.sleep_stage_detector import SleepStageDetector
-from sleep_monitor.alarm.smart_alarm import SmartAlarm
+import importlib
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -51,13 +49,32 @@ def init_system():
                 "max_battery_usage": 20,
                 "data_sync_interval": 300,
                 "api_base_url": "http://localhost:5000/api",
-                "access_token": "default_token",
-                "device_id": "default_device_id"
+                "access_token": "",
+                "device_id": "",
+                "bluetooth_address": "",
+                "device_name": "Redmi Band 2",
+                "sensor_type": "bluetooth"
             }
         }
     
-    # 初始化组件
-    sensor = HardwareSensor(config)
+    # 根据配置决定使用哪种传感器
+    device_settings = config.get('device_settings', {})
+    preferred_sensor_type = device_settings.get('sensor_type', 'bluetooth')
+    
+    # 动态导入传感器模块 - 使用相对导入
+    if preferred_sensor_type == 'bluetooth':
+        from ..sensors.bluetooth_sensor import BluetoothSensor
+        sensor = BluetoothSensor(config)
+    elif preferred_sensor_type == 'hardware':
+        from ..sensors.hardware_sensor import HardwareSensor
+        sensor = HardwareSensor(config)
+    else:  # 默认使用蓝牙
+        from ..sensors.bluetooth_sensor import BluetoothSensor
+        sensor = BluetoothSensor(config)
+    
+    from ..sleep_analysis.sleep_stage_detector import SleepStageDetector
+    from ..alarm.smart_alarm import SmartAlarm
+    
     detector = SleepStageDetector(config)
     alarm = SmartAlarm(config)
 

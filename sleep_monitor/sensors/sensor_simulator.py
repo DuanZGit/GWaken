@@ -150,3 +150,14 @@ class SensorSimulator:
     def set_sleep_start_time(self, start_time):
         """设置睡眠开始时间"""
         self.sleep_start_time = start_time
+    
+    def get_device_info(self):
+        """获取设备信息"""
+        return {
+            'connected': True,
+            'device_model': 'Sensor Simulator',
+            'device_address': 'N/A',
+            'device_name': '模拟传感器',
+            'use_simulation': True,
+            'bluetooth_available': False
+        }

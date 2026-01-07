@@ -1,2 +1,4 @@
 # 红米手环2智能睡眠监测项目依赖
-datetime==4.3
+Flask==2.3.3
+PyBluez==0.23
+requests==2.31.0

@@ -4,9 +4,14 @@
 """
 import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# 添加项目根目录到Python路径
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
 
-from api.sleep_api import run_api_server
+# 设置环境变量，确保模块可以正确导入
+os.environ['PYTHONPATH'] = project_root
+
+from sleep_monitor.api.sleep_api import run_api_server
 
 if __name__ == '__main__':
     # 可以通过命令行参数指定端口

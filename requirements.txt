@@ -1,3 +1,4 @@
 Flask==2.3.3
 PyBluez==0.23
 requests==2.31.0
+kivy==2.1.0

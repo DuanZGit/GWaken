@@ -6,24 +6,27 @@
 - 项目主要使用 Python 3.6+ 开发
 - 依赖管理使用 pip
 - 建议使用虚拟环境进行开发
+- 主要依赖: flask, pybluez, requests
 
 ### 构建命令
 - 无特定构建命令 (Python 为解释型语言)
-- 安装依赖: `pip install -r requirements.txt`
+- 安装依赖: `pip install -r sleep_monitor/requirements.txt`
 - 或使用 `pip install <package>` 安装单个包
 
 ### 测试命令
-- 运行单个测试: `cd /work/sleep && PYTHONPATH=. python -m unittest sleep_monitor.tests.test_sleep_detector.TestSleepStageDetector.test_detect_deep_sleep -v`
-- 运行特定测试类: `cd /work/sleep && PYTHONPATH=. python -m unittest sleep_monitor.tests.test_sleep_detector.TestSleepStageDetector -v`
-- 运行所有测试: `cd /work/sleep && PYTHONPATH=. python -m unittest discover -s sleep_monitor.tests -p "test_*.py" -v`
-- 运行所有测试 (简洁模式): `cd /work/sleep && PYTHONPATH=. python -m unittest discover -s sleep_monitor.tests -p "test_*.py"`
+- 运行单个测试: `cd /work/sleep && PYTHONPATH=. python3 -m unittest sleep_monitor.tests.test_sleep_detector.TestSleepStageDetector.test_detect_deep_sleep -v`
+- 运行特定测试类: `cd /work/sleep && PYTHONPATH=. python3 -m unittest sleep_monitor.tests.test_sleep_detector.TestSleepStageDetector -v`
+- 运行模块测试: `cd /work/sleep && PYTHONPATH=. python3 -m unittest sleep_monitor.tests.test_sleep_detector`
+- 运行所有测试: `cd /work/sleep && PYTHONPATH=. python3 -m unittest discover -s sleep_monitor.tests -p "test_*.py" -v`
+- 运行所有测试 (简洁模式): `cd /work/sleep && PYTHONPATH=. python3 -m unittest discover -s sleep_monitor.tests -p "test_*.py"`
 - Note: 所有测试应在项目根目录(/work/sleep)运行，并设置PYTHONPATH
 
 ### 代码质量命令
-- 格式化代码: `black .` 或 `black <file.py>`
-- 检查代码风格: `flake8 .` 或 `ruff check .`
+- 格式化代码: `black .` 或 `black <file.py>` (如已安装)
+- 检查代码风格: `flake8 .` 或 `ruff check .` (如已安装)
 - 类型检查: `mypy .` (如已安装)
 - 安全检查: `bandit -r .` (如已安装)
+- Python语法检查: `python3 -m py_compile <file.py>`
 
 ## 代码风格指南
 
@@ -57,7 +60,7 @@ from sleep_monitor.alarm.smart_alarm import SmartAlarm
 ### 代码格式化
 - 使用 4 个空格作为缩进
 - 每行最大长度为 88-120 字符
-- 使用 `black` 或 `autopep8` 自动格式化
+- 使用 `black` 或 `autopep8` 自动格式化 (如已安装)
 - 函数和类定义之间使用 2 个空行分隔
 - 类中的方法之间使用 1 个空行分隔
 
@@ -93,6 +96,7 @@ def detect_stage(self, sensor_data: Dict[str, any]) -> str:
 - 使用日志记录错误信息
 - 避免空的 except 块
 - 在传感器和网络操作中特别注意错误处理
+- 实现优雅降级机制（如蓝牙不可用时使用模拟数据）
 
 ```python
 import logging
@@ -142,6 +146,7 @@ def detect_stage(self, sensor_data: Dict[str, any]) -> str:
 - 使用辅助函数分解复杂逻辑
 - 合理使用配置文件管理常量
 - 传感器数据处理和睡眠分析应保持逻辑清晰
+- 实现优雅的异常处理和资源清理
 
 ## 项目特定说明
 
@@ -153,22 +158,24 @@ def detect_stage(self, sensor_data: Dict[str, any]) -> str:
 ### 项目架构
 - 主要技术栈: Python
 - 核心模块:
-  - sensors: 传感器模块 (bluetooth_sensor.py, sensor_simulator.py)
+  - sensors: 传感器模块 (bluetooth_sensor.py, sensor_simulator.py, hardware_sensor.py)
   - sleep_analysis: 睡眠分析模块 (sleep_stage_detector.py)
   - alarm: 闹钟模块 (smart_alarm.py)
   - api: Web API模块 (sleep_api.py)
-  - utils: 工具模块 (data_logger.py, time_utils.py)
+  - utils: 通用工具模块 (data_logger.py, time_utils.py)
 
 ### 项目运行
-- 主程序入口: `cd /work/sleep && PYTHONPATH=. python -m sleep_monitor.main`
-- API服务入口: `cd /work/sleep && PYTHONPATH=. python -m sleep_monitor.run_api 5000`
+- 主程序入口: `cd /work/sleep && PYTHONPATH=. python3 -m sleep_monitor.main`
+- API服务入口: `cd /work/sleep && PYTHONPATH=. python3 -m sleep_monitor.run_api 5000`
 - 配置文件: config.json (包含睡眠检测、闹钟设置、设备设置参数)
+- API测试: 访问 http://localhost:5000
 
 ### 开发工作流
 - 遵循模块化设计
 - 每个模块包含 __init__.py 文件
 - 测试文件位于 tests/ 目录
 - 优先确保所有测试通过后再提交代码
+- 传感器模块需要考虑蓝牙不可用时的优雅降级
 
 ### 代码组织结构
 - sleep_monitor/: 主模块目录
@@ -188,6 +195,7 @@ def detect_stage(self, sensor_data: Dict[str, any]) -> str:
 - 验证和清理所有外部输入
 - 在文件操作中使用适当的安全措施
 - 蓝牙连接和API接口需考虑安全措施
+- 对用户数据进行适当的隐私保护
 
 ## Git 工作流
 - 使用功能分支进行开发
@@ -195,3 +203,10 @@ def detect_stage(self, sensor_data: Dict[str, any]) -> str:
 - 为复杂更改提供详细说明
 - 定期同步主分支的更改
 - 提交前确保所有测试通过
+
+## 项目特定注意事项
+- 项目适配红米手环2设备，需考虑传感器精度限制
+- 实现了蓝牙、硬件和模拟三种传感器接入方式
+- 睡眠检测算法考虑了红米手环2的传感器特性
+- API接口设计用于与小米运动健康App集成
+- 代码中包含大量错误处理和降级逻辑
